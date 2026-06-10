@@ -10,11 +10,9 @@ unsigned long buzzerStartTime = 0;
 bool buzzerActive = false;
 bool buzzerSound = false;
 
-// Inisialisasi HardwareSerial untuk sensor debu di UART2
 HardwareSerial zhSerial(2);
 SD_ZH03B dustSensor(zhSerial);
 
-// Variabel global untuk menyimpan nilai PM
 int pm25 = 0;
 int pm10 = 0;
 
@@ -27,7 +25,7 @@ void setupDust() {
 void readDust() {
 
   if (pid_enable) {
-    if (pm25 > 25) {
+    if (pm25 > 22) {
       digitalWrite(Relay_pin, HIGH);
       relayState = true;
       wake_oled();
@@ -47,7 +45,13 @@ void readDust() {
 
       if (dustSensor.readData()) {
         pm25 = (int)dustSensor.getPM2_5();
+        if (pm25 > 100) {
+          pm25 = 100;
+        }
         pm10 = (int)dustSensor.getPM10_0();
+        if (pm10 > 100) {
+          pm10 = 100;
+        }
 
         if (pm25 > PM25_THRESHOLD) {
           if (!buzzerSound && !buzzerActive) {

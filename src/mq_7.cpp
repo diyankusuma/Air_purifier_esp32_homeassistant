@@ -49,8 +49,6 @@ float convertADCtoPPM(int adc) {
 void loop_mq7() {
   unsigned long current_millis = millis();
 
-  // 1. Cek apakah sudah waktunya untuk memulai SIKLUS PEMBACAAN BARU
-  // Siklus baru hanya dimulai jika tidak ada siklus yang sedang berjalan DAN sudah melewati interval.
   if (!reading_in_progress && (current_millis - last_reading_start_time >= reading_interval)) {
     reading_in_progress = true;
     sample_count = 0;
