@@ -22,7 +22,7 @@ void loopPID(){
   Input = pm25;
   double gap = abs(Setpoint - Input);
   
-  if (gap < 10) {
+  if (gap < 5) {
     myPID.SetTunings(conskp, conski, conskd);
   }
 

@@ -35,9 +35,7 @@ void touch_read() {
       } else {
       pwm_control(0);
       client.publish(topic_status_pid, "0");
-      digitalWrite(buzzerPin, HIGH);
-      delay(3000);
-      digitalWrite(buzzerPin, LOW);
+      beep();
       }
     }
   }

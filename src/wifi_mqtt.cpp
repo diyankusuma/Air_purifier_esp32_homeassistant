@@ -1,18 +1,12 @@
 #include "wifi_mqtt.h"
-#include "HardwareSerial.h"
-#include "IPAddress.h"
-#include "WiFiType.h"
+#include "Arduino.h"
 #include "control.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <cstring>
-#include "esp32-hal-gpio.h"
-#include "esp32-hal.h"
-#include "pin.h"
-#include "state.h"
 #include "oled.h"
+#include "state.h"
 #include "oled_control.h"
-#include "mqtt_publish.h"
+#include <cstring>
 
 const char* ssid = "KusumaSmart";
 const char* pass = "otwlulus";
@@ -24,12 +18,6 @@ const char* topic_relay = "Esp/Relay";
 const char* topic_pwm = "Esp/pwm";
 const char* topic_restart = "Esp/restart";
 const char* topic_pid = "Esp/pid";
-
-IPAddress local_IP(192, 168, 1, 5);
-IPAddress gateaway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
-IPAddress primaryDns(8, 8, 8, 8);
-IPAddress secondDns(8, 8, 4, 4);
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -48,10 +36,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(message);
 
   if (strcmp(topic, topic_relay) == 0) {
-    if (strcmp(message, "1") == 0) {
-      relay_control(true);
-    } else if (strcmp(message, "0") == 0) {
-      relay_control(false);
+    if (!pid_enable) {
+      if (strcmp(message, "1") == 0) {
+        relay_control(true);
+      } else if (strcmp(message, "0") == 0) {
+        relay_control(false);
+      } 
     }
   } else if (strcmp(topic, topic_pwm) == 0) {
     // Konversi message ke integer menggunakan atoi (lebih efisien dari toInt())
@@ -59,60 +49,30 @@ void callback(char* topic, byte* payload, unsigned int length) {
     pwm_control(value);
 
   } else if (strcmp(topic, topic_restart) == 0 ) {
-    if (strcmp(message, "1") == 0 ) {
     ESP.restart();
-    }
   
-  } else if (strcmp(topic, topic_pid) == 0 ) {
-    if (strcmp(message, "1") == 0 || strcmp(message, "true") == 0 ) {
-      if (!pid_enable) {
-        pid_enable = true;
-        beep();
-        wake_oled();
-        client.publish(topic_status_pid, "1");
-      
-      }
-    
-    } else if (strcmp(message, "0") == 0 || strcmp(message, "false") == 0) {
-      if (pid_enable) {
-        pid_enable = false;
-        pwm_control(0);
-        wake_oled();
-        client.publish(topic_status_pid, "0");
-        digitalWrite(buzzerPin, HIGH);
-        delay(3000);
-        digitalWrite(buzzerPin, LOW);
-      
-      }
-    
+  } else if (strcmp(topic, topic_pid) == 0) {
+    if (strcmp(message, "1") == 0) {
+      pid_enable = true;
+      beep();
+      wake_oled();
+    } else if (strcmp(message, "0") == 0) {
+      pid_enable = false;
+      beep();
+      wake_oled();
     }
-  
   }
 }
 
 void setupWiFi() {
-  if (!WiFi.config(local_IP, gateaway, subnet, primaryDns, secondDns)) {
-    Serial.print("Ip statis gagal");  
-  }
-
+  Serial.print("Menghubungkan ke WiFi: ");
+  Serial.println(ssid);
   WiFi.begin(ssid, pass);
-
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
-    delay(500);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000); // delay di setup() masih bisa diterima
     Serial.print(".");
-    attempts++;
   }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.print("wifi tersambung");
-    Serial.print("Alamat IP: ");
-    Serial.print(WiFi.localIP());
-  } else {
-    Serial.print("Gagal terhubung ke wifi restart");
-    delay(3000);
-    ESP.restart();
-  }
+  Serial.println("\nWiFi tersambung!");
 }
 
 void setupMQTT() {
@@ -145,3 +105,4 @@ void loopMQTT() {
     client.loop();
   }
 }
+

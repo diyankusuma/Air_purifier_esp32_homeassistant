@@ -28,7 +28,6 @@ void setupOLED() {
   oled1.begin();
 
   playloading(oled1);
-  beep();
   oled1.clearBuffer();
   oled1.sendBuffer();
   

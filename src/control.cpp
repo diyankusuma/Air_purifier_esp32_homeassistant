@@ -1,5 +1,8 @@
 #include "control.h"
+#include "mqtt_publish.h"
+#include "oled.h"
 #include "pin.h"
+#include "state.h"
 
 #define pwm_channel 0
 #define pwm_freq 2000
