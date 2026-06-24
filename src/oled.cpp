@@ -45,11 +45,11 @@ void PID_auto() {
   oled1.print(pm25);
   oled1.print(" ug/m3");
 
-  oled1.setCursor(72, 42);
+  /*oled1.setCursor(72, 42);
   oled1.print("CO");
   oled1.setCursor(58, 57);
   oled1.print(ppm_mq7);
-  oled1.print(" PPM");
+  oled1.print(" PPM");*/
   oled1.drawXBMP(4, 22, 32, 32, ok_icon);
   oled1.drawBox(49, 0, 3, 64);
 
@@ -68,13 +68,32 @@ void PID_manual() {
   oled1.print(pm25);
   oled1.print(" ug/m3");
 
-  oled1.setCursor(72, 42);
+  /*oled1.setCursor(72, 42);
   oled1.print("CO");
   oled1.setCursor(58, 57);
   oled1.print(ppm_mq7);
-  oled1.print(" PPM");
+  oled1.print(" PPM");*/
   oled1.drawXBMP(4, 22, 32, 32, manual_icon);
   oled1.drawBox(49, 0, 3, 64);
+
+  oled1.setFont(u8g2_font_u8glib_4_tf);
+  oled1.setCursor(55, 43);
+  oled1.print("GOOD");
+  oled1.drawBox(55, 45, 23, 7); //bar condition (x, y, l, t)
+  
+  oled1.setFont(u8g2_font_u8glib_4_tf);
+  oled1.setCursor(80, 43);
+  oled1.print("SAFE");
+  oled1.drawBox(80, 45, 23, 7); 
+
+  oled1.setFont(u8g2_font_u8glib_4_tf);
+  oled1.setCursor(105, 43);
+  oled1.print("TOXIC");
+  oled1.drawBox(105, 45, 23, 7); 
+
+  oled1.setFont(u8g2_font_5x7_tf);
+  oled1.setCursor(pm25Indicator, 60);
+  oled1.print("^");
 
   oled1.sendBuffer();
 

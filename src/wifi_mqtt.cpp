@@ -8,8 +8,8 @@
 #include "oled_control.h"
 #include <cstring>
 
-const char* ssid = "KusumaSmart";
-const char* pass = "otwlulus";
+const char* ssid = "OpenWrt";
+const char* pass = "root1234";
 const char* mqtt_server = "192.168.1.8";
 const int port = 1883;
 const char* mqtt_user = "KusumaIot";
@@ -44,7 +44,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
       } 
     }
   } else if (strcmp(topic, topic_pwm) == 0) {
-    // Konversi message ke integer menggunakan atoi (lebih efisien dari toInt())
     int value = atoi(message);
     pwm_control(value);
 
@@ -69,7 +68,7 @@ void setupWiFi() {
   Serial.println(ssid);
   WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000); // delay di setup() masih bisa diterima
+    delay(1000); 
     Serial.print(".");
   }
   Serial.println("\nWiFi tersambung!");

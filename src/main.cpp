@@ -12,7 +12,6 @@
 #include "oled_control.h"
 #include <ArduinoOTA.h>
 
-
 unsigned long previousMillis = 0;
 const long interval = 2000;
 bool pid_enable = true;
@@ -30,6 +29,7 @@ void setup() {
   setupOLED();
 
   ArduinoOTA.setHostname("OTA_Project");
+  //ArduinoOTA.setPassword("root123");
   ArduinoOTA.begin();
 }
 
