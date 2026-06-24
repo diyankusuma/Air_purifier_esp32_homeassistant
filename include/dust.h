@@ -5,9 +5,11 @@
 
 extern int pm25;
 extern int pm10;
+extern int pm25Indicator;
 
 void setupDust();
 void readDust();
+void pm25_Position();
 
 #endif
 

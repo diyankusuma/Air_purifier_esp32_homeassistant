@@ -15,6 +15,7 @@ SD_ZH03B dustSensor(zhSerial);
 
 int pm25 = 0;
 int pm10 = 0;
+int pm25Indicator = 0;
 
 void setupDust() {
   pinMode(buzzerPin, OUTPUT);
@@ -65,4 +66,17 @@ void readDust() {
         }
 
       }
+      pm25_Position();
     }
+
+void pm25_Position () {
+  if (pm25 <= 20) {
+    pm25Indicator = 63;
+  }
+  else if (pm25 > 20 && pm25 <= 45) {
+    pm25Indicator = 89;
+  }
+  else {
+    pm25Indicator = 114;
+  }
+}
