@@ -17,7 +17,6 @@ const char* topic_pm25 = "Esp/Pm25";
 const char* topic_pm10 = "Esp/Pm10";
 const char* topic_co = "Esp/co";
 const char* topic_adc = "Esp/adc";
-const char* topic_touch = "Esp/touch";
 
 extern int touch_cond;
 
@@ -61,9 +60,6 @@ if (millis() - lastPublishTime > publishInterval) {
 
   dtostrf(Setpoint, 4, 2, payload);
   client.publish("Esp/Pid/Setpoint", payload);
-
-  itoa(touch_cond, payload, 10);
-  client.publish(topic_touch, payload);
 
   client.publish(topic_status_pid, pid_enable ? "ON" : "OFF");
 
