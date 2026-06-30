@@ -12,6 +12,13 @@
 // OLED 1: SH1106 (alamat 0x3D)
 U8G2_SH1106_128X64_NONAME_F_HW_I2C oled1(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
+loadingItem dataLoading[4] = {
+  {"Software", 0},
+  {"OLED", 0},
+  {"Sensor", 0},
+  {"Output", 0}
+};
+
 void beep(){
   for (int i = 0; i < 3; i++) {
     digitalWrite(buzzerPin, HIGH);
@@ -28,6 +35,7 @@ void setupOLED() {
   oled1.begin();
 
   playloading(oled1);
+  playAllBars(oled1, dataLoading, 4, 5000);
   oled1.clearBuffer();
   oled1.sendBuffer();
   
